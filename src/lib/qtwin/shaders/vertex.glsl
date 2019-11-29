@@ -22,18 +22,5 @@ void main()
     texPos = texCoords[gl_VertexID];
 }
 
-
-#elif _FRAGMENT_
-
-in vec2 texPos;
-out vec4 fragColor;
-
-uniform sampler2D sampler;
-
-void main()
-{
-    fragColor = texture(sampler, texPos);
-}
-
 #endif
 

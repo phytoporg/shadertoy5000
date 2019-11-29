@@ -45,7 +45,6 @@ namespace qtwin
         QSize m_texSize;
 
         Program m_progQuad;
-        Program m_progCompute;
 
         GLuint m_vao;
         GLuint m_tex;

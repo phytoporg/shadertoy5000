@@ -3,6 +3,7 @@
 
 # vim
 *.swp
+*.swo
 
 # Compiled Object files
 *.slo
@@ -33,3 +34,6 @@
 *.exe
 *.out
 *.app
+
+# cmake
+build/*
