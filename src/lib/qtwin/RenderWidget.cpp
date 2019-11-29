@@ -67,11 +67,12 @@ namespace qtwin
                 [this]
                 (const std::string& path, FileWatcher::FileWatcherEvent event)
                 {
-                    std::cout << "Reloading " 
-                              << m_fragmentShaderPath
-                              << "...\n";
-                    CompileShaders(m_fragmentShaderPath, m_progQuad);
-                    std::cout << "Done! " << std::endl;
+                    {
+                        std::lock_guard<std::mutex> lock(m_shaderMutex);
+                        m_mustLoadShaders = true;
+                    }
+
+                    updateGL();
                 })
         );
     }
@@ -108,6 +109,15 @@ namespace qtwin
 
     void RenderWidget::paintGL()
     {
+        {
+            std::lock_guard<std::mutex> lock(m_shaderMutex);
+            if (m_mustLoadShaders)
+            {
+                CompileShaders(m_fragmentShaderPath, m_progQuad);
+                m_mustLoadShaders = false;
+            }
+        }
+
         if (m_curSize != m_texSize)
         {
             CreateTexture(m_curSize, m_tex);

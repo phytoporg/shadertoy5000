@@ -13,6 +13,7 @@
 #include <QtGui>
 
 #include <memory>
+#include <mutex>
 #include <fsutil/FileWatcher.h>
 
 #include "Shader.hpp"
@@ -53,6 +54,9 @@ namespace qtwin
 
         std::string m_fragmentShaderPath;
         std::unique_ptr<fsutil::FileWatcher> m_spFileWatcher;
+        
+        std::mutex m_shaderMutex;
+        bool       m_mustLoadShaders;
     };
 }
 
