@@ -18,14 +18,22 @@ namespace
         const size_t FileSize = in.tellg();
         in.seekg(0, in.beg);
 
-        std::vector<char> source(FileSize);
+        std::vector<char> source(FileSize + 1, 0);
         in.read(source.data(), FileSize);
+        source.back() = '\0';
 
         ShaderSource fragmentSource(source.data());
-        quadProgram.link(
-            VertexShader(qtwin::GLVersion, {shaders::vertex}),
-            FragmentShader(qtwin::GLVersion, {fragmentSource})
-        );
+
+        try
+        {
+            quadProgram.link(
+                VertexShader(qtwin::GLVersion, {shaders::vertex}),
+                FragmentShader(qtwin::GLVersion, {fragmentSource})
+            );
+        } catch (GLError& e)
+        {
+            std::cerr << e.what() << std::endl;
+        }
     }
 
     void CreateTexture(QSize size, GLuint& tex)
@@ -105,6 +113,8 @@ namespace qtwin
     {
         glViewport(0, 0, width, height);
         m_curSize = QSize(width, height);
+
+        updateGL();
     }
 
     void RenderWidget::paintGL()
@@ -126,6 +136,11 @@ namespace qtwin
 
         m_progQuad.use();
         glBindImageTexture(0, m_tex, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
+
+        glUniform2f(
+            m_progQuad.uniform("iResolution"),
+            static_cast<float>(m_curSize.width()),
+            static_cast<float>(m_curSize.height()));
 
         glUniform1i(m_progQuad.uniform("sampler"), 0);
         glActiveTexture(GL_TEXTURE0);

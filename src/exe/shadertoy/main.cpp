@@ -33,7 +33,7 @@ int main(int argc, char** argv)
     MainWindow window(spGL.get());
     spGL->setParent(&window);
 
-    QSize size(640, 480);
+    QSize size(1280, 720);
     window.resize(size);
     window.show();
 
